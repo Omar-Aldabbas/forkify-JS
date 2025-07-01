@@ -18,7 +18,7 @@ const timeout = function (s) {
 ///////////////////////////////////////
 console.log('TEST');
 
-const renderSpinner = function(parentEl) {
+const renderSpinner = function (parentEl) {
   const markup = `
         <div class="spinner">
           <svg>
@@ -26,23 +26,24 @@ const renderSpinner = function(parentEl) {
           </svg>
         </div>`;
   parentEl.innerHTML = '';
-  parentEl.insertAdjacentHTML('afterbegin', markup)
-}
+  parentEl.insertAdjacentHTML('afterbegin', markup);
+};
 
 const showRecipe = async function () {
   try {
+    const id = window.location.hash.slice(1);
+    console.log(id);
+    if (!id) return;
 
     renderSpinner(recipeContainer);
     const res = await fetch(
-      'https://forkify-api.jonas.io/api/v2/recipes/664c8f193e7aa067e94e882f'
-      // 'https://forkify-api.jonas.io/api/v2/recipes/5ed6604591c37cdc054bc886'
-
+      `https://forkify-api.jonas.io/api/v2/recipes/${id}`
     );
     const data = await res.json();
 
     if (!res.ok) throw new Error(`${data.message}, (${res.status})`);
 
-    console.log(res, data);
+    // console.log(res, data);
 
     let { recipe } = data.data;
     recipe = {
@@ -56,7 +57,7 @@ const showRecipe = async function () {
       ingredients: recipe.ingredients,
     };
 
-    console.log(recipe);
+    // console.log(recipe);
 
     const markup = `
           <figure class="recipe__fig">
@@ -123,10 +124,12 @@ const showRecipe = async function () {
                         <svg class="recipe__icon">
                           <use href="${icons}#icon-check"></use>
                         </svg>
-                        <div class="recipe__quantity">${ing.quantity || ""}</div>
+                        <div class="recipe__quantity">${
+                          ing.quantity || ''
+                        }</div>
                         <div class="recipe__description">
-                          <span class="recipe__unit">${ing.unit || ""}</span>
-                          ${ing.description || ""}
+                          <span class="recipe__unit">${ing.unit || ''}</span>
+                          ${ing.description || ''}
                         </div>
                       </li>
                     `;
@@ -164,4 +167,7 @@ const showRecipe = async function () {
   }
 };
 
-showRecipe();
+// showRecipe();
+['load','hashchange'].forEach(ev => window.addEventListener(ev, showRecipe))
+
+;
