@@ -1,29 +1,20 @@
 import * as modal from './modal.js';
-import recipeView from "./views/recipeView.js";
-
+import recipeView from './views/recipeView.js';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+import searchView from './views/searchView.js';
+import resultsView from './views/resultsView.js';
 
-const recipeContainer = document.querySelector('.recipe');
 
-const timeout = function (s) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error(`Request took too long! Timeout after ${s} second`));
-    }, s * 1000);
-  });
-};
+if(module.hot) {
+  module.hot.accept();
+}
 
-// NEW API URL (instead of the one shown in the video)
-// https://forkify-api.jonas.io
-
-///////////////////////////////////////
-console.log('TEST');
 
 const controlRecipe = async function () {
   try {
     const id = window.location.hash.slice(1);
-    console.log(id);
+    // console.log(id);
     if (!id) return;
 
     recipeView.renderSpinner();
@@ -31,11 +22,26 @@ const controlRecipe = async function () {
     // const { recipe } = modal.state;
     recipeView.render(modal.state.recipe);
   } catch (error) {
-    alert(error);
+    recipeView.renderError(error);
   }
 };
+const controlSearchResults = async function () {
+  try {
+    resultsView.renderSpinner();
+    // console.log(resultsView);
 
-// controlRecipe();
-['load', 'hashchange'].forEach(ev =>
-  window.addEventListener(ev, controlRecipe)
-);
+    const query = searchView.getQuery();
+    if (!query) return;
+
+    await modal.loadSearchResults(query);
+    // console.log(modal.state.search.results);
+    resultsView.render(modal.state.search.results)
+  } catch (err) {}
+};
+
+const init = function () {
+  recipeView.addHandlerRender(controlRecipe);
+  searchView.addHandlerSearch(controlSearchResults);
+};
+
+init();
