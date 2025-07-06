@@ -12,11 +12,13 @@ class AddRecipeView extends View {
 
   constructor() {
     super();
+    this._originalMarkup = this._parentElement.innerHTML;
     this._addHandlerShowWindow();
     this._addHandlerCloseWindow();
   }
 
   toggleWindow() {
+    this._parentElement.innerHTML = this._originalMarkup;
     this._overlay.classList.toggle('hidden');
     this._window.classList.toggle('hidden');
   }
