@@ -49,3 +49,18 @@ git clone https://github.com/Omar-Aldabbas/forkify-JS.git
 cd forkify-project
 npm install
 npm start
+```
+
+## 🗂️ Project Structure 
+for now
+
+src/
+  ├── controller.js
+  ├── model.js
+  ├── views/
+  │     ├── searchView.js
+  │     ├── resultsView.js
+  │     ├── recipeView.js
+  │     └── bookmarksView.js
+  ├── helpers.js
+  └── config.js
